@@ -1,7 +1,7 @@
 package altrisi.sisaassembler;
 
 // TODO these could be enums
-public interface Instructions {
+interface Instructions {
 	// CCCC field in the MSB
 	byte OPS  = (byte)0b00000000;
 	byte CMP  = (byte)0b00010000;

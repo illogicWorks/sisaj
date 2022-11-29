@@ -8,8 +8,6 @@ Run the jar with `-h` or `--help` to get the command line reference.
 
 You can also usage the assembler as an API.
 
-Note that the only classes that are actually considered API are `altrisi.sisaassembler.Assembler` and `altrisi.sisaassembler.AssembleException`, the rest are considered implementation and may change at any time.
-
 The main API entrypoint is the `Assembler` class. The constructor argument is where you want it to write the produced assembly to.
 You can instantiate by passing it either a `Path` or an `OutputStream`. Passing it a `Path` will make it write to the file it points
 to, creating it if it doesn't exist or truncating it if it does.

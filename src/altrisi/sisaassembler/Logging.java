@@ -2,7 +2,7 @@ package altrisi.sisaassembler;
 
 import java.io.PrintStream;
 
-public class Logging {
+class Logging {
 	public static boolean verbose;
 	public static boolean excessivelyVerbose;
 	public static void debug(String str) {

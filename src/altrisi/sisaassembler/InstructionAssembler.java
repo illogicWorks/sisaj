@@ -3,7 +3,7 @@ package altrisi.sisaassembler;
 import static altrisi.sisaassembler.Utils.*;
 
 @FunctionalInterface
-public interface InstructionAssembler {
+interface InstructionAssembler {
 	void assemble(String args, byte[] buff) throws AssembleException;
 	
 	/**

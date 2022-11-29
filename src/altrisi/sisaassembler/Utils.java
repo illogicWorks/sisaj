@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class Utils {
+class Utils {
 	public static final int HEX = 16;
 	public static final int BIN = 2;
 	public static final Pattern COMMA_SPACE = Pattern.compile("\\s*,\\s*");
