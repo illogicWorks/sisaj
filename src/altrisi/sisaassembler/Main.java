@@ -37,7 +37,7 @@ class Main {
 			return; // compiler doesn't know it doesn't return
 		}
 
-		// don't want to init Logging yet in case I convert it to fully constants, given we don't know verbosity parsed yet
+		// don't want to init Logging yet in case I convert it to fully constants, given we don't have verbosity parsed yet
 		System.out.println("SISA Assembler " + VERSION);
 
 		if (options.has(help)) {
@@ -57,10 +57,6 @@ class Main {
 		if (options.has(instruction)) {
 			assembleSingle(options.valueOf(instruction));
 		} else {
-			if (!options.has(inFile)) {
-				fatal("Missing input file and no instruction provided!");
-				// doesn't return
-			}
 			Path in = options.valueOf(inFile);
 			Path out = options.valueOf(outFile);
 			try (var assembler = new Assembler(out)) {
@@ -68,7 +64,7 @@ class Main {
 				if (assembler.failed()) {
 					try {
 						Files.deleteIfExists(out);
-					} catch (IOException e) { // not reusing the catch below to not fall outside here and to provide a better error message
+					} catch (IOException e) { // not reusing the catch below to not fall outside here and keep the error message
 						error("Failed to delete output file for failed execution", e);
 					}
 					if (!verbose) // verbose already writes a separator here
