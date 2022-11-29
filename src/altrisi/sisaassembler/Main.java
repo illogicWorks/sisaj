@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import static joptsimple.util.PathProperties.*;
 import static altrisi.sisaassembler.Utils.*;
@@ -85,7 +86,7 @@ public class Main {
 	private static void assembleSingle(String instruction) {
 		var out = new ByteArrayOutputStream(2);
 		try (var assembler = new Assembler(out)) {
-			assembler.parseLine(0, instruction);
+			assembler.assemble(Stream.of(instruction));
 			if (assembler.failed()) System.exit(-1); // assembler already sent logs
 		} catch (IOException e) {
 			throw new AssertionError(e);

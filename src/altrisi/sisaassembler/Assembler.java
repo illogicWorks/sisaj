@@ -14,6 +14,20 @@ import static altrisi.sisaassembler.Logging.*;
 import static altrisi.sisaassembler.Utils.*;
 import static altrisi.sisaassembler.Instructions.*;
 
+/**
+ * The main (and only other than {@link AssembleException}) class for usage as an API, see the 
+ * constructors ({@link #Assembler(Path)} and {@link #Assembler(OutputStream)}), the {@code assemble} 
+ * methods ({@link #assemble(Path)} and {@link #assemble(Stream)}), and in order to be able
+ * to handle errors override {@link #failedLine(String, int, AssembleException)}.<p>
+ * 
+ * The {@link Assembler} class is {@link Closeable}: You should use it in a try-with-resources block
+ * in order to allow its {@link OutputStream} to be closed.<p>
+ * 
+ * Tip: You can pass a {@link ByteArrayOutputStream} to {@link #Assembler(OutputStream) the constructor} in order
+ * for the assembler to just write to an array.
+ * 
+ * @author altrisi
+ */
 public class Assembler implements Closeable {
 	private final OutputStream out;
 	private int errors;
@@ -49,28 +63,42 @@ public class Assembler implements Closeable {
 			reg1("IN",    IO,   0, LEFT),
 			reg1("OUT",   IO,   1, RIGHT)
 		);
-	
+
 	public Assembler(Path output) throws IOException {
 		debug("Setting output to file " + output);
 		this.out = Files.newOutputStream(output, CREATE, TRUNCATE_EXISTING);
 	}
 
 	public Assembler(OutputStream out) {
-		this.out = out;
+		this.out = Objects.requireNonNull(out);
 	}
 
-	public void assemble(Path input) throws IOException {
+	/**
+	 * Assembles all lines in the given input {@link Path} into this Assembler's {@link OutputStream}.<p>
+	 * Like with {@link #assemble(Stream)}, errors will be reported to {@link #failedLine(String, int, AssembleException)}.
+	 * @param input        The input {@link Path} to read instructions from
+	 * @throws IOException If an I/O exception occurs while reading from the input {@link Path}, or while writing to the {@link OutputStream}
+	 */
+	public final void assemble(Path input) throws IOException {
 		debug("Starting assembly of file " + input);
 		try (var lines = Files.lines(input)) {
 			assemble(lines);
+		} catch (UncheckedIOException e) {
+			// the Stream has to throw those as the terminal operation can't throw checked. Propogate it ourselves
+			throw e.getCause();
 		}
 	}
 
-	// @VisibleForTesting
-	public void assemble(Stream<String> lines) throws IOException {
+	/**
+	 * Assembles the given {@link Stream} of {@link String} instructions into this Assembler's {@link OutputStream}.<p>
+	 * Errors will be reported to {@link #failedLine(String, int, AssembleException)}.
+	 * @param instructions A {@link Stream} of the instructions to assemble
+	 * @throws IOException If an I/O exception occurs while writing to the {@link OutputStream}
+	 */
+	public final void assemble(Stream<String> instructions) throws IOException {
 		debugSeparator();
 		int lineNo = 1;
-		for (String line : (Iterable<String>)() -> lines.map(String::strip).filter(not(String::isEmpty)).filter(s -> !s.startsWith(";")).iterator()) {
+		for (String line : (Iterable<String>)() -> instructions.map(String::strip).filter(not(String::isEmpty)).filter(s -> !s.startsWith(";")).iterator()) {
 			parseLine(lineNo, line);
 			lineNo++;
 			debugSeparator();
@@ -78,16 +106,16 @@ public class Assembler implements Closeable {
 		if (!failed()) debug("Finished compilation of " + lineNo + " lines");
 	}
 
-	public void parseLine(int lineNo, String str) throws IOException {
+	private void parseLine(int lineNo, String str) throws IOException {
 		debug("Assembling instruction '" + str + "'" + " in line " + lineNo);
 
 		String[] decomposed = MULTI_WHITESPACE.split(str, 2);
 		InstructionAssembler operation = HANDLERS.get(decomposed[0]);
 
 		if (operation == null) {
-			failedLine(str, lineNo, new AssembleException("Operation '" + decomposed[0] + "' not found"));
+			failLine(str, lineNo, new AssembleException("Operation '" + decomposed[0] + "' not found"));
 		} else if (decomposed.length == 1) {
-			failedLine(str, lineNo, new AssembleException("Operation '" + decomposed[0] + "' takes arguments, found none"));
+			failLine(str, lineNo, new AssembleException("Operation '" + decomposed[0] + "' takes arguments, found none"));
 		} else {
 			debug("Using operator: " + operation);
 			try {
@@ -96,24 +124,37 @@ public class Assembler implements Closeable {
 					debug("Compiled to 0x" + shortToString(instructionBuff, HEX).toUpperCase() + " (" + shortToString(instructionBuff, BIN) + ")");
 				out.write(instructionBuff);
 			} catch (AssembleException e) {
-				failedLine(str, lineNo, e);
+				failLine(str, lineNo, e);
 			}
 		}
 	}
 	
-	private void failedLine(String line, int lineNo, AssembleException e) {
-		errors++;
-		error("Compilation error in line " + lineNo + ": " + line, e);
+	/**
+	 * Gets called when a line fails to compile.<p>
+	 * If you're using the assembler as an API, overriding this method is your best bet to be able to handle errors
+	 * as you like.<p>
+	 * @param line   The line contents, after trimming
+	 * @param lineNo The line number, with the proper offsets
+	 * @param exception The {@link AssembleException} that caused this failure
+	 */
+	public void failedLine(String line, int lineNo, AssembleException exception) {
+		error("Compilation error in line " + lineNo + ": " + line, exception);
 		if (Utils.earlyExit) {
 			fatal("Exiting because of early-exit setting");
 		}
 	}
+
+	// need to increment error counter first
+	private void failLine(String line, int lineNo, AssembleException exception) {
+		errors++;
+		failedLine(line, lineNo, exception);
+	}
 	
-	public boolean failed() {
+	public final boolean failed() {
 		return errors != 0;
 	}
 
-	public int errors() {
+	public final int errors() {
 		return errors;
 	}
 
