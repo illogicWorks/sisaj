@@ -109,7 +109,7 @@ public class Assembler implements Closeable {
 	public final void assemble(Stream<String> instructions) throws IOException {
 		debugSeparator();
 		int lineNo = 1;
-		for (String line : (Iterable<String>)() -> instructions.map(String::strip).filter(not(String::isEmpty)).filter(s -> !s.startsWith(";")).iterator()) {
+		for (String line : iterate(instructions.map(Utils::trimIncludingComments).filter(not(String::isEmpty)))) {
 			parseLine(lineNo, line);
 			lineNo++;
 			debugSeparator();

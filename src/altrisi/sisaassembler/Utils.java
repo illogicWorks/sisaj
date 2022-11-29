@@ -2,6 +2,7 @@ package altrisi.sisaassembler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Utils {
 	public static final int HEX = 16;
@@ -26,6 +27,19 @@ public class Utils {
 			return "0".repeat(requiredLength - str.length()) + str;
 		} else {
 			return str;
+		}
+	}
+
+	public static <T> Iterable<T> iterate(Stream<T> s) {
+		return () -> s.iterator();
+	}
+	
+	public static String trimIncludingComments(String line) {
+		int index = line.indexOf(';');
+		if (index < 0) {
+			return line.strip();
+		} else {
+			return line.substring(0, index).strip();
 		}
 	}
 	
