@@ -14,7 +14,7 @@ import static altrisi.sisaassembler.Utils.*;
 import static altrisi.sisaassembler.Logging.*;
 
 class Main {
-	private static final boolean DEV_ENV = true;
+	private static final boolean DEV_ENV = false;
 	private static final String VERSION = "0.1.0";
 
 	public static void main(String[] args) {
