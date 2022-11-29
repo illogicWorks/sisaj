@@ -64,11 +64,22 @@ public class Assembler implements Closeable {
 			reg1("OUT",   IO,   1, RIGHT)
 		);
 
+	/**
+	 * Creates an Assembler that will output to a file in the given {@link Path},
+	 * creating one if it doesn't exist or truncating it if it does.
+	 * @param output The {@link Path} of the file the Assembler should output to
+	 * @throws IOException If an I/O exception occurs while opening the file
+	 */
 	public Assembler(Path output) throws IOException {
 		debug("Setting output to file " + output);
 		this.out = Files.newOutputStream(output, CREATE, TRUNCATE_EXISTING);
 	}
 
+	/**
+	 * Creates an Assembler that will output to the given {@link OutputStream}.<p>
+	 * The {@link OutputStream} will be closed when invoking the {@link #close()} method
+	 * @param out The {@link OutputStream} the Assembler should output to
+	 */
 	public Assembler(OutputStream out) {
 		this.out = Objects.requireNonNull(out);
 	}
