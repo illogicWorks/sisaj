@@ -29,8 +29,8 @@ public interface InstructionAssembler {
 			right |= regB << 6;
 			right |= dest << 3;
 
-			buff[0] = left;
-			buff[1] = right;
+			buff[0] = right;
+			buff[1] = left;
 		}
 	}
 
@@ -57,8 +57,8 @@ public interface InstructionAssembler {
 			byte right = constant;
 			right |= dest << 6;
 
-			buff[0] = left;
-			buff[1] = right;
+			buff[0] = right;
+			buff[1] = left;
 		}
 	}
 
@@ -77,8 +77,8 @@ public interface InstructionAssembler {
 
 			byte right = parseConstant(strs[regAtLeft ? 1 : 0], false);
 
-			buff[0] = left;
-			buff[1] = right;
+			buff[0] = right;
+			buff[1] = left;
 		}
 	}
 	
@@ -100,8 +100,8 @@ public interface InstructionAssembler {
 			byte right = addr.offset();
 			right |= reg << 6;
 
-			buff[0] = left;
-			buff[1] = right;
+			buff[0] = right;
+			buff[1] = left;
 		}
 	}
 }

@@ -12,7 +12,7 @@ public class Utils {
 
 	public static String shortToString(byte[] b, int radix) {
 		assert b.length == 2;
-		return byteToString(b[0], radix) + byteToString(b[1], radix);
+		return byteToString(b[1], radix) + byteToString(b[0], radix);
 	}
 
 	private static String byteToString(byte b, int radix) {

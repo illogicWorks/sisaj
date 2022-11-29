@@ -94,9 +94,6 @@ public class Assembler implements Closeable {
 				operation.assemble(decomposed[1], instructionBuff);
 				if (verbose) // guard for expensive enough 2x String conversion
 					debug("Compiled to 0x" + shortToString(instructionBuff, HEX).toUpperCase() + " (" + shortToString(instructionBuff, BIN) + ")");
-				// TODO assert correct endianness
-//				out.write(instructionBuff[1]);
-//				out.write(instructionBuff[0]);
 				out.write(instructionBuff);
 			} catch (AssembleException e) {
 				failedLine(str, lineNo, e);
