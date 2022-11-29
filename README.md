@@ -42,3 +42,9 @@ by subclassing and overriding the `failedLine` method, that is called for every 
 ### Assembling to memory
 
 You can simply use Java's `ByteArrayOutputStream` if you want to assemble something to memory instead of to a file.
+
+### Verbose logging with the API
+
+Via the API, the assembler will not output anything (other than, as mentioned, errors in the default `failedLine` implementation). While not supported,
+you can toggle the `verbose` (and optionally the `excessivelyVerbose`) fields in the `altrisi.sisaassembler.Logging` class via ways like
+reflection in order to receive verbose logging similar to the one the command-line arguments would give you, to the standard output (`System.out`).
