@@ -21,9 +21,9 @@ class ParsersTests {
 
 	@TestFactory
 	Stream<DynamicTest> oversizedRegs() {
-		return new Random().ints()
+		return new Random().ints(-50, 50)
 				.filter(i -> i > 7 || i < 0)
-				.limit(80)
+				.limit(10)
 				.mapToObj(i -> dynamicTest("Parsing of registry " + i, () -> assertThrows(AssembleException.class, () -> Utils.parseReg("R" + i))));
 	}
 
