@@ -13,9 +13,9 @@ import static joptsimple.util.PathProperties.*;
 import static altrisi.sisaassembler.Utils.*;
 import static altrisi.sisaassembler.Logging.*;
 
-class Main {
+class AssemblerApp {
 	private static final boolean DEV_ENV = false;
-	private static final String VERSION = "0.2.0";
+	private static final String VERSION = AssemblerApp.class.getPackage().getImplementationVersion();
 
 	public static void main(String[] args) {
 		OptionParser parser = new OptionParser();

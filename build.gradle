@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+archivesBaseName = 'sisaassembler'
+
+allprojects {
+	version = '0.2'
+	group = 'illogicworks'
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 17
+	}
+}
+
+java {
+	withSourcesJar()
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,31 @@
+plugins {
+	id 'java'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+archivesBaseName = 'sisaj'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
+	implementation project(':')
+}
+
+// Swap jar suffixes and minimize shadow
+jar.archiveClassifier = 'without-deps'
+shadowJar {
+	archiveClassifier = null
+	minimize()
+}
+
+tasks.withType(Jar) {
+	manifest {
+		attributes 'Main-Class' : 'altrisi.sisaassembler.AssemblerApp',
+		           'Implementation-Version': archiveVersion
+	}
+}
+
+build.dependsOn shadowJar

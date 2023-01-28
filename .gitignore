@@ -1,2 +1,31 @@
 /bin/
 demo.sisa
+
+# Gradle project-specific cache directory
+.gradle/
+
+# Gradle build output directories
+build/
+
+# Eclipse
+
+*.launch
+
+# Idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VSCode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
