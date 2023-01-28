@@ -10,3 +10,4 @@
 # Enforce unix line endings in illogic
 *.java          text eol=lf
 *.sisa          text eol=lf
+*.gradle        text eol=lf
