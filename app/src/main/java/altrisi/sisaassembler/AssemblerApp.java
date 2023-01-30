@@ -70,6 +70,8 @@ class AssemblerApp {
 					if (!verbose) // verbose already writes a separator here
 						info("-----------------------------------");
 					fatal("Compilation failed with " + assembler.errors() + " error(s)");
+				} else {
+					info("Finished compilation of " + in.getFileName() + " successfully");
 				}
 			} catch (IOException e) {
 				fatal("Error while reading or writing files: ", e);
